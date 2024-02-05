@@ -20,7 +20,6 @@ namespace WebShop.DAL
 
         public virtual DbSet<Category> Categorys { get; set; }
         public virtual DbSet<Country> Countrys { get; set; }
-        public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<Manufacture> Manufactures { get; set; }
         public virtual DbSet<PriceChange> PriceChanges { get; set; }
@@ -67,25 +66,7 @@ namespace WebShop.DAL
                     .HasColumnName("name");
             });
 
-            modelBuilder.Entity<Customer>(entity =>
-            {
-                entity.ToTable("customers");
-
-                entity.HasIndex(e => e.UserId, "customers_user_id_key")
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.User)
-                    .WithOne(p => p.Customer)
-                    .HasForeignKey<Customer>(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_user_id");
-            });
+            
 
             modelBuilder.Entity<Delivery>(entity =>
             {
@@ -98,7 +79,7 @@ namespace WebShop.DAL
                     .HasMaxLength(60)
                     .HasColumnName("address");
 
-                entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+                entity.Property(e => e.UserId).HasColumnName("customer_id");
 
                 entity.Property(e => e.DeliveryDate)
                     .HasColumnType("date")
@@ -109,9 +90,9 @@ namespace WebShop.DAL
 
                 entity.Property(e => e.ProductId).HasColumnName("product_id");
 
-                entity.HasOne(d => d.Customer)
+                entity.HasOne(d => d.User)
                     .WithMany()
-                    .HasForeignKey(d => d.CustomerId)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_costomer_id");
 
@@ -239,17 +220,17 @@ namespace WebShop.DAL
                     .ValueGeneratedNever()
                     .HasColumnName("purchase_id");
 
-                entity.Property(e => e.CustomerId).HasColumnName("customer_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.PurchaseDate)
                     .HasColumnType("date")
                     .HasColumnName("purchase_date");
 
-                entity.HasOne(d => d.Customer)
+                entity.HasOne(d => d.User)
                     .WithMany(p => p.Purchases)
-                    .HasForeignKey(d => d.CustomerId)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_customer_id");
+                    .HasConstraintName("fk_user_id");
             });
 
             modelBuilder.Entity<PurchaseItem>(entity =>
@@ -314,6 +295,11 @@ namespace WebShop.DAL
                     .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("password");
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(80)
+                    .HasColumnName("role");
             });
 
             OnModelCreatingPartial(modelBuilder);

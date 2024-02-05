@@ -13,10 +13,10 @@ namespace WebShop.Domain.Entity
         }
 
         public Guid PurchaseId { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime PurchaseDate { get; set; }
 
-        public virtual Customer Customer { get; set; }
+        public virtual User User { get; set; }
         public virtual ICollection<PurchaseItem> PurchaseItems { get; set; }
     }
 }

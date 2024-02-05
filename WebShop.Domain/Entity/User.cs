@@ -13,7 +13,8 @@ namespace WebShop.Domain.Entity
         public string Email { get; set; }
         public string Login { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }
 
-        public virtual Customer Customer { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
     }
 }

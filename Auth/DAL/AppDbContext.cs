@@ -16,8 +16,6 @@ namespace Auth.DAL
             : base(options)
         {
         }
-
-        public virtual DbSet<Administrator> Administrators { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens{get;set;}
 
@@ -33,28 +31,6 @@ namespace Auth.DAL
         {
             modelBuilder.HasPostgresExtension("uuid-ossp")
                 .HasAnnotation("Relational:Collation", "Russian_Russia.1251");
-
-            modelBuilder.Entity<Administrator>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("administrators");
-
-                entity.HasIndex(e => e.IdUser, "administrators_id_user_key")
-                    .IsUnique();
-
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .HasDefaultValueSql("uuid_generate_v4()");
-
-                entity.Property(e => e.IdUser).HasColumnName("id_user");
-
-                entity.HasOne(d => d.IdUserNavigation)
-                    .WithOne()
-                    .HasForeignKey<Administrator>(d => d.IdUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("administrators_id_user_fkey");
-            });
 
             modelBuilder.Entity<RefreshToken>(entity =>
             {
@@ -76,14 +52,9 @@ namespace Auth.DAL
                     .HasColumnType("date")
                     .HasColumnName("expiration_date");
 
-                //entity.HasOne(d => d.UserId)
-                //    .WithOne()
-                //    .HasForeignKey<RefreshToken>(d => d.UserId)
-                //    .OnDelete(DeleteBehavior.ClientSetNull)
-                //    .HasConstraintName("refresh_token_user_id_fkey");
                 entity.HasOne(d => d.IdUserNavigation)
                       .WithMany()
-                      .HasForeignKey(d => d.UserId) // Указываем название внешнего ключа здесь
+                      .HasForeignKey(d => d.UserId)
                       .OnDelete(DeleteBehavior.ClientSetNull)
                       .HasConstraintName("refresh_token_user_id_fkey");
             });
@@ -121,6 +92,11 @@ namespace Auth.DAL
                     .IsRequired()
                     .HasMaxLength(50)
                     .HasColumnName("password");
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .HasColumnName("role");
             });
 
             OnModelCreatingPartial(modelBuilder);

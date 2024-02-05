@@ -11,9 +11,9 @@ namespace WebShop.Domain.Entity
         public DateTime DeliveryDate { get; set; }
         public int ProductCount { get; set; }
         public string Address { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid UserId { get; set; }
 
-        public virtual Customer Customer { get; set; }
+        public virtual User User { get; set; }
         public virtual Product Product { get; set; }
     }
 }
