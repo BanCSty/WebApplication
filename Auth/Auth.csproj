@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -21,6 +21,11 @@
   <ItemGroup>
 	  <ProjectReference Include="..\WebShop.DAL\WebShop.DAL.csproj" />
 	  <ProjectReference Include="..\WebShop.Service\WebShop.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Implentations\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
 </Project>

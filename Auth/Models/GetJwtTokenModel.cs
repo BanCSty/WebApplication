@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Auth.Models
 {
-    public class GenJwtTokenModel
+    public class GetJwtTokenModel
     {
         public Guid Id { get; set; }
         public string Login { get; set; }

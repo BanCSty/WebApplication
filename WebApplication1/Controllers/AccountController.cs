@@ -9,67 +9,91 @@ using BCrypt.Net;
 using WebApplication.Models;
 using System.Net.Http.Headers;
 using WebShop.Domain.ViewModels.Account;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using WebShop.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
 
-        public AccountController(IHttpClientFactory httpClientFactory)
+        private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
+
+        public AccountController(ITokenService tokenService, IUserService userService)
         {
-            _httpClientFactory = httpClientFactory;
+            _tokenService = tokenService;
+            _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
-        
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(string username, string password)
         {
-            var client = _httpClientFactory.CreateClient();
-            var authUrl = "https://localhost:44308/api/Auth/Login";
+            var response = await _userService.AuthenticateAsync(username, password);
 
-            //Объект, содержащий данные пользователя для отправки на сервер аутентификации
-            var data = new LoginModel{ Username = username, Password = password /*BCrypt.Net.BCrypt.HashPassword(password)*/ };
+            if (response.StatusCode == WebShop.Domain.Enum.StatusCode.OK)
+            {             
+                HttpContext.Response.Cookies.Append("Bearer", response.Data.JwtToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Рекомендуется использовать HTTPS
+                    SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
 
-            // Отправка запроса на сервер аутентификации
-            var response = await client.PostAsJsonAsync(authUrl, data);
+                    Expires = DateTime.UtcNow.AddMinutes(15) // Время истечения срока действия куки
+                });
 
-            if (response.IsSuccessStatusCode)
-            {
-                // Если аутентификация прошла успешно, перенаправим пользователя на главную страницу магазина
-                //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Headers.ToString());
+                HttpContext.Response.Cookies.Append("RefreshToken", response.Data.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Рекомендуется использовать HTTPS
+                    SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
+
+                    Expires = DateTime.UtcNow.AddDays(1) // Время истечения срока действия куки
+                });
                 return RedirectToAction("Index", "Home");
             }
             else
             {
                 // Если аутентификация не удалась, отобразим сообщение об ошибке на странице входа
-                ModelState.AddModelError(string.Empty, "Неправильное имя пользователя или пароль.");
+                ViewData["ErrorMessage"] = "Неправильное имя пользователя или пароль.";
                 return View("Login");
             }
         }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            var client = _httpClientFactory.CreateClient();
-            var authUrl = "https://localhost:44308/api/Auth/Register";
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             if (model == null || model.Password != model.PasswordConfirm)
                 return BadRequest();
 
-            var hashPass = BCrypt.Net.BCrypt.HashPassword(model.PasswordConfirm);
+            var response = await _userService.RegisterAsync(model);     
 
-            //Объект, содержащий данные пользователя для отправки на сервер аутентификации
-            var data = new RegisterViewModel { Name = model.Name, Password = hashPass, PasswordConfirm = hashPass };
-
-            // Отправка запроса на сервер аутентификации
-            var response = await client.PostAsJsonAsync(authUrl, data);
-
-            if (response.IsSuccessStatusCode)
+            if (response.StatusCode == WebShop.Domain.Enum.StatusCode.OK)
             {
                 // Если аутентификация прошла успешно, перенаправим пользователя на главную страницу магазина
                 return RedirectToAction("Index", "Home");
@@ -77,7 +101,41 @@ namespace WebApplication.Controllers
             else
             {
                 // Если аутентификация не удалась, отобразим сообщение об ошибке на странице входа
-                ModelState.AddModelError(string.Empty, "Registration faild");
+                ViewData["ErrorMessage"] = "Ошибка реггистрации";
+                return View("Register");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RefreshToken(RefreshTokenModel model)
+        {
+            var response = await _tokenService.RefreshAsync(model);
+
+            if (response != null)
+            {
+                HttpContext.Response.Cookies.Append("Bearer", response.JwtToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Рекомендуется использовать HTTPS
+                    SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
+
+                    Expires = DateTime.UtcNow.AddMinutes(1) // Время истечения срока действия куки
+                });
+
+                HttpContext.Response.Cookies.Append("RefreshToken", response.RefreshToken, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true, // Рекомендуется использовать HTTPS
+                    SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
+
+                    Expires = DateTime.UtcNow.AddDays(1) // Время истечения срока действия куки
+                });
+                return Ok();
+            }
+            else
+            {
+                // Если аутентификация не удалась, отобразим сообщение об ошибке на странице входа
+                ViewData["ErrorMessage"] = "Неправильное имя пользователя или пароль.";
                 return View("Login");
             }
         }

@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Threading.Tasks;
-using WebShop.DAL.Interfaces;
-using WebShop.Domain.Entity;
-using WebShop.Domain;
+
 using WebShop.Service.Interfaces;
 using WebShop.Domain.ViewModels.Product;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication.Controllers
 {
@@ -22,6 +19,7 @@ namespace WebApplication.Controllers
             _productService = productService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
@@ -34,7 +32,7 @@ namespace WebApplication.Controllers
 
             return RedirectToAction("Error");
         }
-
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetProduct(Guid id)
         {
@@ -47,7 +45,7 @@ namespace WebApplication.Controllers
 
             return RedirectToAction("Error");
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> GetProductByName(string name)
         {
@@ -61,6 +59,7 @@ namespace WebApplication.Controllers
             return RedirectToAction("Error");
         }
 
+        [HttpGet]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
@@ -74,8 +73,8 @@ namespace WebApplication.Controllers
             return RedirectToAction("Error");
         }
 
-        [Authorize(Roles = "Admin")]
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SaveProduct(Guid id)
         {
             if (id == Guid.Empty)
@@ -93,7 +92,7 @@ namespace WebApplication.Controllers
 
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SaveProduct(ProductCreateViewModel productViewModel, IFormFile file)
         {
             if(!ModelState.IsValid)

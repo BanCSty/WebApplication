@@ -22,6 +22,7 @@ namespace Auth.Controllers
     {
 
         [Authorize]
+        //[Authorize(Roles = "Administrator")]
         [HttpGet("login")]
         public async Task<IActionResult> Login()
         {

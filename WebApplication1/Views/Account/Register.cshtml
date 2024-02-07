@@ -1,0 +1,80 @@
+﻿@model WebShop.Domain.ViewModels.Account.RegisterViewModel
+<h2>Register</h2>
+
+@{
+    ViewBag.Title = "Register";
+    Layout = "_Layout";
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+
+<form asp-action="Register" method="post">
+    <div class="form-group">
+        <label asp-for="Login">Login:</label>
+        <input asp-for="Login" class="form-control" />
+        <span asp-validation-for="Login" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email">Email:</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FirstName">First Name:</label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName">Last Name:</label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password">Password:</label>
+        <input type="password" asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PasswordConfirm">Confirm Password:</label>
+        <input type="password" asp-for="PasswordConfirm" class="form-control" />
+        <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $("form").submit(function (event) {
+            var password = $("#Password").val();
+            var confirmPassword = $("#PasswordConfirm").val();
+
+            if (!isStrongPassword(password)) {
+                alert("Пароль должен содержать хотя бы одну заглавную букву, одну строчную букву, одну цифру и иметь длину от 8 до 16 символов");
+                event.preventDefault(); // Предотвращаем отправку формы
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                alert("Пароли не совпадают");
+                event.preventDefault(); // Предотвращаем отправку формы
+                return;
+            }
+        });
+
+        function isStrongPassword(password) {
+            var regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,16}$/;
+            return regex.test(password);
+        }
+    });
+</script>

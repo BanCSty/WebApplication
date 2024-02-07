@@ -38,34 +38,18 @@ namespace Auth.Controllers
                 return Unauthorized("Invalid username or password");
             }
 
-
-            HttpContext.Response.Cookies.Append("Bearer", user.Data.JwtToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, // Рекомендуется использовать HTTPS
-                SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
-                Domain = "localhost", // Замените на ваш домен
-                Path = "/", // Путь на сервере, где куки должны быть доступны
-                Expires = DateTime.UtcNow.AddDays(1) // Время истечения срока действия куки
-            });
-
-            HttpContext.Response.Cookies.Append("RefreshToken", user.Data.RefreshToken, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true, // Рекомендуется использовать HTTPS
-                SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
-                Domain = "localhost", // Замените на ваш домен
-                Path = "/", // Путь на сервере, где куки должны быть доступны
-                Expires = DateTime.UtcNow.AddDays(1) // Время истечения срока действия куки
-            });
-
-            return Ok(new {user.Data.JwtToken, user.Data.RefreshToken });
+            return Ok(new LoginResponse{JwtToken = user.Data.JwtToken,RefreshToken = user.Data.RefreshToken, Expiration = user.Data.Expiration });
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("refresh")]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenModel model)
+        public async Task<IActionResult> Refresh(string access, string refresh)
         {
+            var model = new RefreshTokenModel
+            {
+                AccessToken = HttpContext.Request.Cookies["Bearer"],
+                RefreshToken = HttpContext.Request.Cookies["RefreshToken"]
+            };
 
             if (model == null)
                 return Unauthorized();
@@ -73,13 +57,12 @@ namespace Auth.Controllers
             var refreshToken = await _tokenService.RefreshAsync(model);
 
             if (refreshToken == null)
-                return BadRequest();
+                return Unauthorized();
 
-            return Ok(new LoginResponse
+            return Ok(new RefreshResponse
             {
                 JwtToken = refreshToken.JwtToken,
                 Expiration = refreshToken.Expiration,
-                RefreshToken = refreshToken.RefreshToken
             });
         }    
 

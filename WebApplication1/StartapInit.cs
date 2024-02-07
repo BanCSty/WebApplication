@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,9 @@ using WebShop.DAL.Repositories;
 using WebShop.Domain.Entity;
 using WebShop.Service.Implementations;
 using WebShop.Service.Interfaces;
+using WebShop.Service.Middleware;
+using WebShop.Services.Implentations;
+using WebShop.Services.Interfaces;
 
 namespace WebApplication
 {
@@ -16,11 +20,16 @@ namespace WebApplication
         public static void InitializeRepositories(this IServiceCollection services)
         {
             services.AddScoped<IBaseRepository<Product>, ProductRepository>();
+            services.AddScoped<IBaseRepository<User>, AccountRepository>();
+
+
         }
 
         public static void InitializeServices(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
         }
     }
 }
