@@ -19,6 +19,7 @@ namespace WebShop.DAL
         }
 
         public virtual DbSet<Category> Categorys { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<Country> Countrys { get; set; }
         public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<Manufacture> Manufactures { get; set; }
@@ -190,8 +191,7 @@ namespace WebShop.DAL
 
                 entity.Property(e => e.InStock)
                     .IsRequired()
-                    .HasColumnName("in_stock")
-                    .HasDefaultValueSql("true");
+                    .HasColumnName("in_stock");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Products)
@@ -301,6 +301,33 @@ namespace WebShop.DAL
                     .HasMaxLength(80)
                     .HasColumnName("role");
             });
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+
+                entity.ToTable("refresh_token");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasDefaultValueSql("uuid_generate_v4()");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id");
+
+                entity.Property(e => e.TokenRefresh)
+                    .HasColumnType("text")
+                    .HasColumnName("refresh_token");
+
+                entity.Property(e => e.ExpirationDate)
+                    .HasColumnType("date")
+                    .HasColumnName("expiration_date");
+
+                entity.HasOne(d => d.IdUserNavigation)
+                      .WithMany()
+                      .HasForeignKey(d => d.UserId)
+                      .OnDelete(DeleteBehavior.ClientSetNull)
+                      .HasConstraintName("refresh_token_user_id_fkey");
+            });        
 
             OnModelCreatingPartial(modelBuilder);
         }
