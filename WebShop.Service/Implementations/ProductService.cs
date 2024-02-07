@@ -106,7 +106,7 @@ namespace WebShop.Service.Implementations
         {
             try
             {
-                var product = await _productRepository.Select().FirstOrDefaultAsync(x => x.Name == name);
+                var product = await _productRepository.Select().FirstOrDefaultAsync(x => x.Name.ToLower() == name);
 
                 if(product == null)
                 return new BaseResponse<ProductViewModel>()
