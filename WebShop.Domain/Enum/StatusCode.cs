@@ -10,6 +10,8 @@ namespace WebShop.Domain.Enum
     {
         OK = 200,
         InternalServer = 500,
-        ProductNotFound = 1
+        ProductNotFound = 1,
+        BadRequest = 400,
+        TokenNotFound = 2
     }
 }
