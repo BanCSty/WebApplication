@@ -5,6 +5,7 @@
 
 .card {
     box-shadow: 4px 2px 2px 3px #c82333;
+    align-items: center;
 }
 
 .card-title {
@@ -15,4 +16,30 @@
 .card-buttons-group {
     text-align: right;
     padding: 10px;
+}
+
+.catalog-list-link {
+    display: block; /* Делаем элементы блочными, чтобы они шли сверху вниз */
+    margin-bottom: 5px; /* Отступ снизу между элементами */
+}
+
+.catalog-list-link a {
+    display: block; /* Делаем ссылку блочным элементом */
+    padding: 10px; /* Добавляем отступы вокруг текста ссылки */
+    
+    color: #000000; /* Задаем цвет текста */
+    
+    border-radius: 5px; /* Добавляем скругление углов */
+    transition: background-color 0.3s; /* Добавляем плавное изменение цвета фона при наведении */
+    font-size: 20px;
+}
+
+.catalog-list-link a:hover {
+    background-color: #e0e0e0; /* Изменяем цвет фона при наведении курсора */
+}
+
+.card img {
+    max-width: 60%; /* Максимальная ширина изображения будет равна ширине его контейнера */
+    height: auto; /* Поддерживает соотношение сторон */   
+  
 }

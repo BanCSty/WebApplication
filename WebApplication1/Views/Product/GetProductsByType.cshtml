@@ -1,0 +1,49 @@
+﻿@model List<WebShop.Domain.Entity.Product>
+
+@{
+    ViewData["Title"] = "GetProducts/";
+}
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<style>
+    .card-buttons-group {
+        text-align: right;
+        padding: 10px;
+    }
+</style>
+
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/image/@product.Image" class="card-img-top img" alt="@product.Name">
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">@product.Description</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Стоимость: @product.Price ₽</li>
+                    <li class="list-group-item">@product.Type</li>
+                </ul>
+                <div class="card-body">
+                    <a asp-action="GetProduct" asp-route-id="@product.Id">Перейти</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <hr />
+                        <a asp-controller="Product" asp-action="DeleteProduct" asp-route-id="@product.Id" class="btn btn-danger">Удалить</a>
+                        <a asp-controller="Product" asp-action="SaveProduct" asp-route-id="@product.Id" class="btn btn-primary">Изменить</a>
+                    }
+                    <a asp-controller="Order" asp-action="CreateOrder" asp-route-id="@product.Id" class="btn btn-success">В корзину</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

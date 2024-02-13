@@ -1,9 +1,164 @@
-﻿﻿@{
-    ViewData["Title"] = "Home Page";
-
+﻿@{
+    ViewData["Title"] = "Главная";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div style="padding: 10px;"></div>
+<div style="padding: 10px;"></div>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">СТРОЙМАТЕРИАЛЫ</h5>
+                <div class="catalog-list-links">
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType" asp-route-id="Кирпич" >Кирпич</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Металлопрокат</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Общестроительные материалы</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Сухие смеси</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Цемент, вяжущие и сыпучие материалы</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">ИЗОЛЯЦИЯ</h5>
+                <div class="catalog-list-links">
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Теплоизоляция</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Звукоизоляционные материалы</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Пены, герметики</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Полиэтиленовые пленки</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/"  >Ветрозащита</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">ОТДЕЛОЧНЫЕ МАТЕРИАЛЫ</h5>
+                <div class="catalog-list-links">
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Обои</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Самоклеящаяся пленка</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Лепнина</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Декоративные штукатурки</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">ПОТОЛОЧНЫЕ СИСТЕМЫ</h5>
+                <div class="catalog-list-links">
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Потолочные панели</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Светильники</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Лепнина</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/" >Подвесная система</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">КРЕПЕЖ</h5>
+                <div class="catalog-list-links">
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Саморезы</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Шурупы</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Дюбели</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Анкерный крепеж</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Гайки</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Шайбы</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Гвозди</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Болты</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Заклепки</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h5 class="card-title">ЭЛЕКТРИКА</h5>
+                <div class="catalog-list-links">
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Удлинители</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Щитки, автоматы, счетчики</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Кабели и комплектующие</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Батарейки и аккумуляторы</a>
+                    </div>
+                    <div class="catalog-list-link">
+                        <a asp-controller="Product" asp-action="GetProductsByType/">Розетки и выключатели</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>

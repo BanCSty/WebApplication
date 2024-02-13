@@ -7,17 +7,8 @@
 @{
     var textTitle = Model?.ID == Guid.Empty ? "Изменение данных" : "Добавление данных";
 }
-
-<div style="padding: 10px;"></div>
-<div class="col-md-12">
-    <div class="card-body">
-        <div class="card card-outline-secondary" style="background-color: white">
-            <div class="card-header">
-                <h3 class="mb-0 text-center ParagraphHome">@textTitle</h3>
-            </div>
-            <div class="card-body">
                 <form asp-action="SaveProduct" enctype="multipart/form-data">
-                    @*<input asp-for="Id" hidden />*@
+                    <input asp-for="ID" hidden />
                     <div asp-validation-summary="All" style="font-size:23px; font-family:Impact, serif" class="text-danger text-center"></div>
                     <div class="form-group">
                         <label asp-for="Name"></label>
@@ -35,22 +26,36 @@
                         <label asp-for="Description"></label>
                         <textarea asp-for="Description" class="form-control"></textarea>
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">₽</span>
-                        <input asp-for="ManufactureName" type="text" class="form-control">
-                        <span class="input-group-text">.00</span>
+                    <div class="form-group">
+                        <select class="form-control" asp-for="CategoryName" id="productType"></select>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" asp-for="CategoryName" id="carTypeId"></select>
+                        <select class="form-control" asp-for="CountryName" id="ptoductCountry"></select>
                     </div>
-                    <div class="input-group mb-3">
-                        <input asp-for="Image" class="form-control" type="file">
+                    <div class="form-group">
+                        <select class="form-control" asp-for="ManufactureName" id="ptoductManufacture"></select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" asp-for="InStock" id="productInStock">
+                            <option value="true">В наличии</option>
+                            <option value="false">Нет в наличии</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Price"></label>
+                        <input asp-for="Price" class="form-control" type="number">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="col-form-label">Изображение</label>
+                        <input asp-for="@Model.IMG" class="form-control" type="file">
                     </div>
                     <button class="btn btn-primary btn-lg float-right" type="submit">Отправить</button>
                 </form>
+
+
                 <script src="~/lib/select2/js/select2.full.min.js"></script>
                 <script>
-                    $('#carTypeId').select2({
+                    $('#productType').select2({
                        placeholder: "Выберите тип",
                        minimumInputLength: 0,
                        allowClear: true,
@@ -70,6 +75,53 @@
                             }
                         }
                     });
+                                
+                </script>
+
+                <script>
+                    $('#ptoductCountry').select2({
+                       placeholder: "Выберите страну производителя",
+                       minimumInputLength: 0,
+                       allowClear: true,
+                       ajax: {
+                            type: "POST",
+                            url: "@Url.Action("GetCountrys", "Product")",
+                            dataType: "json",
+                            processResults: function (result) {
+                                return {
+                                    results: $.map(result, function (val, index) {
+                                        return {
+                                            id: val,
+                                            text: val
+                                        };
+                                    }),
+                                };
+                            }
+                        }
+                    });
+                </script>
+
+                <script>
+                    $('#ptoductManufacture').select2({
+                       placeholder: "Выберите бренд",
+                       minimumInputLength: 0,
+                       allowClear: true,
+                       ajax: {
+                            type: "POST",
+                            url: "@Url.Action("GetManufactures", "Product")",
+                            dataType: "json",
+                            processResults: function (result) {
+                                return {
+                                    results: $.map(result, function (val, index) {
+                                        return {
+                                            id: val,
+                                            text: val
+                                        };
+                                    }),
+                                };
+                            }
+                        }
+                    });
                 </script>
 
                 <style>
@@ -77,8 +129,3 @@
                         color: black;
                     }
                 </style>
-
-            </div>
-        </div>
-    </div>
-</div>

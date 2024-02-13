@@ -1,0 +1,87 @@
+﻿@model List<WebShop.Domain.ViewModels.Order.OrderViewModel>
+
+@{
+    ViewBag.Title = "Корзина";
+    Layout = "_Layout";
+}
+
+@{
+    var cardStyle = "col-md-12";
+    if (Model != null)
+    {
+        switch (Model.Count)
+        {
+            case 2:
+                cardStyle = "col-md-6";
+                break;
+            case 3:
+                cardStyle = "col-md-4";
+                break;
+        }
+    }
+}
+@if (Model == null || Model.Count == 0)
+{
+    <div style="padding:40px;"></div>
+    <div class="card col-md-12">
+        <div class="row g-0">
+            <div class="col-md-12">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Список заказов пуст :(</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="row row-cols-1 @cardStyle text-center">
+                <div class="col" style="padding: 10px;">
+                    <div class="card">
+                        <img src="~/image/@item.Image" class="img-fluid rounded-start rounded">
+                        <div class="card-body">
+                            <h5 class="card-title">Название: @item.ProductName</h5>
+                            <p class="card-text">Тип: @item.Type</p>
+                            <p class="card-text">Цена заказа: @item.Price</p>
+                            <p class="card-text">Количество: @item.Quantity</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                        </ul>
+                        <div class="card-body">
+                            <a asp-controller="Basket" asp-action="GetItem" asp-route-id="@item.Id" class="btn btn-primary">Открыть</a>
+                            <a asp-controller="Order" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Удалить</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+<script>
+    function openModal(options) {
+        // Получаем URL и данные из параметров
+        var url = options.url;
+        var data = options.data;
+
+        // Делаем AJAX-запрос для получения содержимого модального окна
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: { id: data },
+            success: function (response) {
+                // Вставляем полученное содержимое в модальное окно
+                $('#myModal .modal-body').html(response);
+
+                // Открываем модальное окно
+                $('#myModal').modal('show');
+            },
+            error: function (xhr, status, error) {
+                // Обработка ошибок при AJAX-запросе
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>

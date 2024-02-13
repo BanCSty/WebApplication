@@ -1,0 +1,23 @@
+﻿@model WebShop.Domain.ViewModels.Order.OrderViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <img src="~/image/@Model.Image"
+             class="img-fluid rounded-start rounded">
+    </div>
+    <div class="col-md-6">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Название: @Model.ProductName</li>
+            <li class="list-group-item">Тип: @Model.Type</li>
+            <li class="list-group-item">Цена: @Model.Price</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">ФИО: @Model.FirstName @Model.LastName.Substring(0, 1)</li>
+            <li class="list-group-item">Адрес: @Model.Address</li>
+            <li class="list-group-item">Дата создания: @Model.DateCreate</li>
+        </ul>
+    </div>
+</div>
+
