@@ -21,21 +21,12 @@ namespace WebShop.DAL
         public virtual DbSet<Category> Categorys { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<Country> Countrys { get; set; }
-        public virtual DbSet<Delivery> Deliveries { get; set; }
         public virtual DbSet<Manufacture> Manufactures { get; set; }
-        public virtual DbSet<PriceChange> PriceChanges { get; set; }
         public virtual DbSet<Product> Product { get; set; }
-        public virtual DbSet<Purchase> Purchases { get; set; }
-        public virtual DbSet<PurchaseItem> PurchaseItems { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<Basket> Baskets { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //if (!optionsBuilder.IsConfigured)
-            //{
-            //    optionsBuilder.UseNpgsql("Host=localhost;Database=WebSHop;Username=Ban;Password=123");
-            //}
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -67,200 +58,52 @@ namespace WebShop.DAL
                     .HasColumnName("name");
             });
 
-            
-
-            modelBuilder.Entity<Delivery>(entity =>
+           
+            modelBuilder.Entity<Order>(entity =>
             {
-                entity.HasNoKey();
+                entity.ToTable("orders");
 
-                entity.ToTable("deliveries");
-
-                entity.Property(e => e.Address)
-                    .IsRequired()
-                    .HasMaxLength(60)
-                    .HasColumnName("address");
-
-                entity.Property(e => e.UserId).HasColumnName("customer_id");
-
-                entity.Property(e => e.DeliveryDate)
-                    .HasColumnType("date")
-                    .HasColumnName("delivery_date")
-                    .HasDefaultValueSql("now()");
-
-                entity.Property(e => e.ProductCount).HasColumnName("product_count");
-
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
-
-                entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_costomer_id");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany()
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_product_id");
-            });
-
-            modelBuilder.Entity<Manufacture>(entity =>
-            {
-                entity.ToTable("manufactures");
-
-                entity.HasKey(e => e.Name);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(80)
-                    .HasColumnName("name");
-            });
-
-            modelBuilder.Entity<PriceChange>(entity =>
-            {
-                entity.HasKey(e => new { e.ProductId, e.DatePriceChange })
-                    .HasName("price_change_pkey");
-
-                entity.ToTable("price_change");
-
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
-
-                entity.Property(e => e.DatePriceChange)
-                    .HasColumnType("date")
-                    .HasColumnName("date_price_change")
-                    .HasDefaultValueSql("now()");
-
-                entity.Property(e => e.NewPrice)
-                    .HasPrecision(9, 3)
-                    .HasColumnName("new_price");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.PriceChanges)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_product_id");
-            });
-
-            modelBuilder.Entity<Product>(entity =>
-            {
-                entity.ToTable("product");
+                entity.HasKey(x => x.Id);
 
                 entity.Property(e => e.Id)
                     .HasColumnName("id")
                     .HasDefaultValueSql("uuid_generate_v4()");
 
-                entity.Property(e => e.CategoryName)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnName("category_name");
+                entity.Property(e => e.ProductId)
+                    .HasColumnName("product_id")
+                    .IsRequired();
 
-                entity.Property(e => e.CountryName)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnName("country_name");
-
-                entity.Property(e => e.Description)
-                    .IsRequired()
-                    .HasMaxLength(400)
-                    .HasColumnName("description");
-
-                entity.Property(e => e.Image)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnName("image");
-
-                entity.Property(e => e.ManufactureName)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .HasColumnName("manufacture_name");
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(40)
-                    .HasColumnName("name");
-
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasMaxLength(40)
-                    .HasColumnName("type");
-
-                entity.Property(e => e.Weignt)
-                    .IsRequired()
-                    .HasMaxLength(15)
-                    .HasColumnName("weignt");
-
-                entity.Property(e => e.InStock)
-                    .IsRequired()
-                    .HasColumnName("in_stock");
-
-                entity.HasOne(d => d.Category)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.CategoryName)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_category_name");
-
-                entity.HasOne(d => d.Country)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.CountryName)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_country_name");
-
-                entity.HasOne(d => d.Manufacture)
-                    .WithMany(p => p.Products)
-                    .HasForeignKey(d => d.ManufactureName)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_manufacture_name");
-            });
-
-            modelBuilder.Entity<Purchase>(entity =>
-            {
-                entity.ToTable("purchases");
-
-                entity.Property(e => e.PurchaseId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("purchase_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.Property(e => e.PurchaseDate)
+                entity.Property(e => e.DateCreated)
+                    .HasColumnName("date_created")
                     .HasColumnType("date")
-                    .HasColumnName("purchase_date");
+                    .IsRequired();
 
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Purchases)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_user_id");
-            });
+                entity.Property(e => e.Address)
+                    .HasColumnName("address")
+                    .IsRequired();
 
-            modelBuilder.Entity<PurchaseItem>(entity =>
-            {
-                entity.HasKey(e => new { e.PurchaseId, e.ProductId })
-                    .HasName("pk_purchase_items");
+                entity.Property(e => e.FirstName)
+                    .HasColumnName("first_name")
+                    .IsRequired();
 
-                entity.ToTable("purchase_items");
+                entity.Property(e => e.LastName)
+                    .HasColumnName("last_name")
+                    .IsRequired();
 
-                entity.Property(e => e.PurchaseId).HasColumnName("purchase_id");
+                entity.Property(e => e.BasketId)
+                    .HasColumnName("basket_id")
+                    .IsRequired();
 
-                entity.Property(e => e.ProductId).HasColumnName("product_id");
+                entity.Property(e => e.Quantity)
+                    .HasColumnName("quantity")
+                    .IsRequired();
 
-                entity.Property(e => e.ProductCount).HasColumnName("product_count");
+                entity.Property(e => e.Price)
+                    .HasColumnName("price")
+                    .IsRequired();
 
-                entity.Property(e => e.ProductPrice)
-                    .HasPrecision(9, 3)
-                    .HasColumnName("product_price");
+                entity.HasOne(x => x.Basket).WithMany(y => y.Orders).HasForeignKey(z => z.BasketId);
 
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.PurchaseItems)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_product_id");
-
-                entity.HasOne(d => d.Purchase)
-                    .WithMany(p => p.PurchaseItems)
-                    .HasForeignKey(d => d.PurchaseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_purchase_id");
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -300,6 +143,107 @@ namespace WebShop.DAL
                     .IsRequired()
                     .HasMaxLength(80)
                     .HasColumnName("role");
+            });
+
+            modelBuilder.Entity<Basket>(entity =>
+            {
+                entity.ToTable("basket").HasKey(x => x.Id);
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasDefaultValueSql("uuid_generate_v4()");
+
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id");
+
+
+            });
+
+            modelBuilder.Entity<Manufacture>(entity =>
+            {
+                entity.ToTable("manufactures");
+
+                entity.HasKey(e => e.Name);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(80)
+                    .HasColumnName("name");
+            });
+
+            modelBuilder.Entity<Product>(entity =>
+            {
+                entity.ToTable("product");
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id")
+                    .HasDefaultValueSql("uuid_generate_v4()");
+
+                entity.Property(e => e.CategoryName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("category_name");
+
+                entity.Property(e => e.CountryName)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnName("country_name");
+
+                entity.Property(e => e.Description)
+                    .IsRequired()
+                    .HasMaxLength(400)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Image)
+                    .IsRequired()
+                    .HasMaxLength(150)
+                    .HasColumnName("image");
+
+                entity.Property(e => e.ManufactureName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnName("manufacture_name");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .HasColumnName("name");
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(40)
+                    .HasColumnName("type");
+
+                entity.Property(e => e.Weignt)
+                    .IsRequired()
+                    .HasMaxLength(15)
+                    .HasColumnName("weignt");
+
+                entity.Property(e => e.InStock)
+                    .IsRequired()
+                    .HasColumnName("in_stock");
+
+                entity.Property(e => e.Price)
+                    .HasPrecision(9, 3)
+                    .HasColumnName("price");
+
+                entity.HasOne(d => d.Category)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.CategoryName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_category_name");
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.CountryName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_country_name");
+
+                entity.HasOne(d => d.Manufacture)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.ManufactureName)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_manufacture_name");
             });
 
             modelBuilder.Entity<RefreshToken>(entity =>

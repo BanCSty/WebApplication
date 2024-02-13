@@ -34,12 +34,15 @@ namespace WebShop.DAL.Repositories
 
         public IQueryable<User> Select()
         {
-            throw new NotImplementedException();
+            return _db.Users;
         }
 
-        public Task<User> Update(User entity)
+        public async Task<User> Update(User entity)
         {
-            throw new NotImplementedException();
+            _db.Users.Update(entity);
+            await _db.SaveChangesAsync();
+
+            return entity;
         }
     }
 }
