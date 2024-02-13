@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using WebShop.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WebApplication.Controllers
 {
@@ -106,6 +107,65 @@ namespace WebApplication.Controllers
             }
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> Edit()
+        {
+            var jwtToken = HttpContext.Request.Cookies["Bearer"];
+            if (jwtToken != null)
+            {
+                var principal = await _tokenService.GetPrincipalWithoutExeptionFromExpiredToken(jwtToken);
+
+                var idUserClaim = principal.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                var user = _userService.GetUserByIdAsync(Guid.Parse(idUserClaim)).Result;
+
+                if (user.Data == null)
+                    return Unauthorized();
+
+                var updateModel = new UpdateUserModel()
+                {
+                    Id = user.Data.Id,
+                    Login = user.Data.Login,
+                    Email = user.Data.Email,
+                    FirstName = user.Data.FirstName,
+                    LastName = user.Data.LastName,
+                };
+
+                return View(updateModel);
+            }
+            return Unauthorized();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdateUserModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var response = await _userService.UpdateUserAsync(model);
+
+            if (response.StatusCode == WebShop.Domain.Enum.StatusCode.OK)
+            {
+                // Если аутентификация прошла успешно, перенаправим пользователя на главную страницу магазина
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                // Если аутентификация не удалась, отобразим сообщение об ошибке на странице входа
+                ViewData["ErrorMessage"] = "Ошибка реггистрации";
+                return View("Register");
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> RefreshToken(RefreshTokenModel model)
         {
@@ -143,7 +203,14 @@ namespace WebApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            return Ok();
+            // Удаление куки с access token
+            Response.Cookies.Delete("Bearer");
+
+            // Удаление куки с refresh token
+            Response.Cookies.Delete("RefreshToken");
+
+            // Перенаправление пользователя на страницу после выхода
+            return RedirectToAction("Index", "Home");
         }
     }
 }
