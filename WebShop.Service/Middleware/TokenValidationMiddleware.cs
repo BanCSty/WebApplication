@@ -49,7 +49,6 @@ namespace WebShop.Service.Middleware
                 var refreshToken = context.Request.Cookies["RefreshToken"];
                 var jwtToken = context.Request.Cookies["Bearer"];
 
-
                 if (refreshToken != null)
                 {
                         var isValidToken = await _tokenService.GetPrincipalWithoutExeptionFromExpiredToken(jwtToken);
@@ -66,10 +65,10 @@ namespace WebShop.Service.Middleware
                             context.Response.Cookies.Append("Bearer", updateTokens.JwtToken, new CookieOptions
                             {
                                 HttpOnly = true,
-                                Secure = true, // Рекомендуется использовать HTTPS
-                                SameSite = SameSiteMode.Strict, // Рекомендуется использовать SameSite=Strict
+                                Secure = true, 
+                                SameSite = SameSiteMode.Strict, 
 
-                                Expires = DateTime.UtcNow.AddMinutes(15) // Время истечения срока действия куки
+                                Expires = DateTime.UtcNow.AddHours(2) // Время истечения срока действия куки
                             });
 
                             await _next(context);

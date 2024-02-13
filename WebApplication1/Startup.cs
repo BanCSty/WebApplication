@@ -38,7 +38,7 @@ namespace WebApplication
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
@@ -52,10 +52,6 @@ namespace WebApplication
             services.AddHttpClient();
             services.InitializeRepositories();
             services.InitializeServices();
-
-            //services.AddSingleton<TokenValidationMiddlewareFactory>();
-
-
 
             services.AddAuthentication(x =>
             {
@@ -135,13 +131,7 @@ namespace WebApplication
                         return Task.CompletedTask;
                     }
                 };
-            });
-
-            //services.Configure<CookiePolicyOptions>(options =>
-            //{
-            //    //options.MinimumSameSitePolicy = SameSiteMode.Lax;
-            //    options.HttpOnly = HttpOnlyPolicy.Always;
-            //});        
+            });      
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
