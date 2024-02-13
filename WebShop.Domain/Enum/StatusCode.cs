@@ -12,6 +12,8 @@ namespace WebShop.Domain.Enum
         InternalServer = 500,
         ProductNotFound = 1,
         BadRequest = 400,
-        TokenNotFound = 2
+        TokenNotFound = 2,
+
+        OrderNotFound = 22,
     }
 }

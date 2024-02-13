@@ -9,17 +9,29 @@ namespace WebShop.Domain.Enum
 {
     public enum TypeOfProduct
     {
-        [Display(Name = "Легковой автомобиль")]
-        PassengerCar = 0,
-        [Display(Name = "Седан")]
-        Sedan = 1,
-        [Display(Name = "Хэтчбек")]
-        HatchBack = 2,
-        [Display(Name = "Минивэн")]
-        Minivan = 3,
-        [Display(Name = "Спортивная машина")]
-        SportsCar = 4,
-        [Display(Name = "Внедорожник")]
-        Suv = 5,
+        //СТРОЙМАТЕРИАЛЫ
+        [Display(Name = "Кирпич")]
+        Kirpich = 0,
+        [Display(Name = "Общестроительные материалы")]
+        StroyMaterial = 1,
+        [Display(Name = "Металлопрокат")]
+        Metalloprokat = 2,
+        [Display(Name = "Сухие смеси")]
+        SuhieSmesi = 3,
+        [Display(Name = "Цемент, вяжущие и сыпучие материалы")]
+        Cement = 4,
+
+        //ИЗОЛЯЦИЯ
+        [Display(Name = "Теплоизоляция")]
+        Teoloizolyatsiya = 5,
+        [Display(Name = "Звукоизоляционные материалы")]
+        ZvukoizolytsionnieMateriali = 6,
+        [Display(Name = "Пены, герметики")]
+        PenaGermetiki = 7,
+        [Display(Name = "Полиэтиленовые пленки")]
+        Plenki = 8,
+        [Display(Name = "Ветрозащита")]
+        Vetrozashita = 9,
+
     }
 }

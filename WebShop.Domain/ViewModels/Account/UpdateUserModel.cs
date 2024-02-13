@@ -7,6 +7,8 @@ namespace WebShop.Domain.ViewModels.Account
 {
     public class UpdateUserModel
     {
+        public Guid Id { get; set; }
+
         public string Login { get; set; }
 
         public string Email { get; set; }
@@ -15,6 +17,8 @@ namespace WebShop.Domain.ViewModels.Account
 
         public string LastName { get; set; }
 
-        public string Password { get; set; }
+        public string LastPassword { get; set; }
+
+        public string NewPassword { get; set; }
     }
 }

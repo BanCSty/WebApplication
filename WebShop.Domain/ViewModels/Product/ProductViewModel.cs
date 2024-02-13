@@ -29,6 +29,8 @@ namespace WebShop.Domain.ViewModels.Product
 
         public bool InStock { get; set; }
 
+        public decimal Price { get; set; }
+
         public IFormFile IMG { get; set; }
     }
 }

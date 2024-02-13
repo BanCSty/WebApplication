@@ -8,11 +8,6 @@ namespace WebShop.Domain.Entity
 {
     public partial class Product
     {
-        public Product()
-        {
-            PriceChanges = new HashSet<PriceChange>();
-            PurchaseItems = new HashSet<PurchaseItem>();
-        }
 
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -24,11 +19,10 @@ namespace WebShop.Domain.Entity
         public string ManufactureName { get; set; }
         public string CategoryName { get; set; }
         public bool InStock { get; set; }
+        public decimal Price { get; set; }
 
         public virtual Category Category { get; set; }
         public virtual Country Country { get; set; }
         public virtual Manufacture Manufacture { get; set; }
-        public virtual ICollection<PriceChange> PriceChanges { get; set; }
-        public virtual ICollection<PurchaseItem> PurchaseItems { get; set; }
     }
 }

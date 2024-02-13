@@ -15,6 +15,6 @@ namespace WebShop.Domain.Entity
         public string Password { get; set; }
         public string Role { get; set; }
 
-        public virtual ICollection<Purchase> Purchases { get; set; }
+        public Basket Basket { get; set; }
     }
 }
