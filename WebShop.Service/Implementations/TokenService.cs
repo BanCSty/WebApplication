@@ -94,35 +94,6 @@ namespace WebShop.Services.Implentations
             };
         }
 
-        public async Task<bool> UpdateRefrshTokenAsync(Guid id, string token)
-        {
-    
-            if (id == Guid.Empty || token == null)
-                return false;
-            try
-            {
-                var generateRefreshToken = GenerateRefreshToken().Result;
-
-                var user = await _db.RefreshTokens.FirstOrDefaultAsync(x => x.UserId == id);
-                var updateUserToken = new RefreshToken()
-                {
-                    UserId = user.UserId,
-                    TokenRefresh = generateRefreshToken,
-                    ExpirationDate = DateTime.Now.AddDays(1),
-                };
-
-                _db.Remove(user);
-                await _db.AddAsync(updateUserToken);
-                await _db.SaveChangesAsync();
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
         public async Task<bool> ValidateRefreshTokenAsync(Guid userId, string refreshToken)
         {
             // Поиск Refresh токена пользователя

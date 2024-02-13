@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using WebShop.DAL;
+using WebShop.DAL.Interfaces;
 using WebShop.Domain.Entity;
 using WebShop.Domain.Enum;
 using WebShop.Domain.Responce;
@@ -171,6 +172,7 @@ namespace WebShop.Services.Implentations
                 // Создание нового пользователя
                 var newUser = new User
                 {
+                    Id = Guid.NewGuid(),
                     Login = model.Login,
                     Email = model.Email,
                     FirstName = model.FirstName,
@@ -179,8 +181,18 @@ namespace WebShop.Services.Implentations
                     Role = "User"
                 };
 
+                var basket = new Basket()
+                {
+                    UserId = newUser.Id
+                };
+
                 // Cоздания нового пользователя
-                var result = await _context.Users.AddAsync(newUser);
+                await _context.Users.AddAsync(newUser);
+
+                //Создаение корзины для пользователя
+                await _context.Baskets.AddAsync(basket);
+
+                //Сохранение изменений
                 await _context.SaveChangesAsync();
 
                 return new BaseResponse<User>()
@@ -199,9 +211,9 @@ namespace WebShop.Services.Implentations
             }
         }
 
-        public async Task<IBaseResponse<User>> UpdateUserAsync(Guid id,UpdateUserModel model)
+        public async Task<IBaseResponse<User>> UpdateUserAsync(UpdateUserModel model)
         {
-            if (id == Guid.Empty || model == null)
+            if (model == null)
                 return new BaseResponse<User>()
                 { 
                     StatusCode = StatusCode.BadRequest,
@@ -210,7 +222,9 @@ namespace WebShop.Services.Implentations
 
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                var hashLastPassword = HashPasswordHelper.HashPassowrd(model.LastPassword);
+
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == model.Id && x.Password == hashLastPassword);
                 if (user == null)
                     return new BaseResponse<User>()
                     {
@@ -218,14 +232,16 @@ namespace WebShop.Services.Implentations
                         DescriptionError = "Id not found"
                     };
 
+                var hashNewPassword = HashPasswordHelper.HashPassowrd(model.NewPassword);
+
                 var updateUser = new User()
                 {
-                    Id = user.Id,
                     Email = model.Email == null ? user.Email : model.Email,
                     Login = model.Login == null ? user.Login : model.Login,
                     FirstName = model.FirstName == null ? user.FirstName : model.FirstName,
                     LastName = model.LastName == null ? user.LastName : model.LastName,
-                    Password = model.Password == null ? user.Password : model.Password
+                    Password = model.NewPassword == null ? user.Password : hashNewPassword,
+                    Role = user.Role
                 };
 
                 _context.Users.Update(updateUser);

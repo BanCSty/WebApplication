@@ -18,12 +18,18 @@ namespace WebShop.Service.Interfaces
 
         public Task<IBaseResponse<bool>> DeleteProduct(Guid id);
 
-        public Task<IBaseResponse<Product>> CreateProduct(ProductCreateViewModel productViewModel, IFormFile file);
+        public Task<IBaseResponse<Product>> CreateProduct(ProductCreateViewModel productViewModel);
 
         public Task<IBaseResponse<ProductViewModel>> GetProduct(string name);
 
-        public Task<IBaseResponse<Product>> Edit(ProductCreateViewModel productViewModel, IFormFile file);
+        public Task<IBaseResponse<Product>> Edit(ProductCreateViewModel productViewModel);
 
-        BaseResponse<Dictionary<int, string>> GetTypes();
+        public Task<IBaseResponse<List<Product>>> GetProductsByType(string type);
+
+        public Task<BaseResponse<List<Product>>> SearchProduct(string request);
+
+        public Task<BaseResponse<Dictionary<string, string>>> GetTypes();
+        public Task<BaseResponse<Dictionary<string, string>>> GetCountrys();
+        public Task<BaseResponse<Dictionary<string, string>>> GetManufactures();
     }
 }
