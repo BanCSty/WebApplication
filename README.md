@@ -2,7 +2,7 @@
 ## Используемые технологии
 
 ### Backend
-- ASP.NET Core 6
+- ASP.NET Core 5
 - Entity Framework Core
 - C#
 
